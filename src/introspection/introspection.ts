@@ -105,19 +105,16 @@ function markRelayTypes(schema) {
     }
 
     _.each(type.fields, field => {
-      if (!/.Connection$/.test(field.type.name))
+      if (!/.List/.test(field.type.name))
         return;
 
-      //FIXME: additional checks
-      const relayConnetion = field.type;
+      const relayConnection = field.type;
 
-      if (!relayConnetion.fields.edges) return;
+      if (!relayConnection.fields.items) return;
 
-      relayConnetion.isRelayType = true;
-      const relayEdge = relayConnetion.fields['edges'].type;
-      relayEdge.isRelayType = true;
-      const realType = relayEdge.fields['node'].type;
-      edgeTypesMap[relayEdge.name] = realType;
+      relayConnection.isRelayType = true;
+      const realType = relayConnection.fields['items'].type;
+      edgeTypesMap[relayConnection.name] = realType;
 
       field.relayType =  field.type;
       field.type = realType;
